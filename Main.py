@@ -39,18 +39,17 @@ while run:
         case ["cat", filename]:
             cat(filename)
         case ["edit", filename] if len(command) > 1:  # Check if the filename is provided
-            # Read the current content of the file
             existing_content = cat(filename)
-            
-            # Get the new content for the file by prompting the user
             new_content = get_multiline_input(existing_content)
-            
-            # Update the file's content with the new content
             edit(filename, new_content)
             print(f"File '{filename}' has been updated.")
         case ["quit"]:
             run = False
-        case ["tree"]:
-            tree()
+        case ["pwd"]:
+            pwd()
+        case ["mkdir", dirname]:
+            mkdir(dirname)
+        case ["touch", filename]:
+            touch(filename)
         case _:
             print(f"zsh: command not found: {user_input}")
