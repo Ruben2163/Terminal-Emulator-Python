@@ -1,2 +1,2 @@
 # Python-Terminal
-This is a terminal made in python.
+This is a Unix like terminal made in python.
