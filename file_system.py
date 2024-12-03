@@ -1,60 +1,5 @@
 import os
 
-
-def display_help():
-    commands = """
-Available commands:
-- mkdir <folder_name>       : Create a folder
-- touch <file_name>         : Create a file
-- ls                        : List contents of the current directory
-- read <file_name>          : Read a file
-- rm <file_name>            : Delete a file
-- rmdir <folder_name>       : Delete a folder
-- mv <old_name> <new_name>  : Rename a file or folder
-- cd <folder_name>          : Change directory
-- cd ..                     : Move to the parent directory
-- pwd                       : Print the current working directory
-- help                      : Show this help menu
-- exit                      : Exit the program
-"""
-    print(commands)
-
-aliases = {}
-def find_alias(cmd, arg1, arg2):
-    cmd = ""
-    if cmd == "mkdir" and arg1:
-        print(create_folder(arg1))
-    elif cmd == "touch" and arg1:
-        print(create_file(arg1))
-    elif cmd == "ls":
-        contents = list_contents()
-        if isinstance(contents, list):
-            print("\n".join(contents) if contents else "Directory is empty.")
-        else:
-            print(contents)
-    elif cmd == "read" and arg1:
-        print(read_file(arg1))
-    elif cmd == "rm" and arg1:
-        print(delete_file(arg1))
-    elif cmd == "rmdir" and arg1:
-        print(delete_folder(arg1))
-    elif cmd == "mv" and arg1 and arg2:
-        print(rename_item(arg1, arg2))
-    elif cmd == "cd" and arg1:
-        print(change_directory(arg1))
-    elif cmd == "cd":
-        print("zsh: cd must have 1 argument")
-    elif cmd == "back":
-        print(go_back())
-    elif cmd == "pwd":
-        print(print_working_directory())
-    elif cmd == "help":
-        display_help()
-    elif cmd == "alias" and arg1 and arg2:
-        alias(arg1, arg2)
-    else:
-        print(f"zsh: command not found: {cmd}")
-
 # Base directory for the virtual file system
 BASE_DIRECTORY = os.path.join(os.getcwd(), "virtual_fs")
 
@@ -65,9 +10,13 @@ if not os.path.exists(BASE_DIRECTORY):
 # Current working directory starts at BASE_DIRECTORY
 current_directory = BASE_DIRECTORY
 
+# Alias storage
+ALIAS_FILE = os.path.join(BASE_DIRECTORY, "aliases.txt")
+aliases = {}
 
+
+# File system operations
 def create_folder(folder_name):
-    """Creates a folder in the current directory."""
     folder_path = os.path.join(current_directory, folder_name)
     try:
         os.makedirs(folder_path, exist_ok=True)
@@ -77,7 +26,6 @@ def create_folder(folder_name):
 
 
 def create_file(file_name, content=""):
-    """Creates a file in the current directory with optional content."""
     file_path = os.path.join(current_directory, file_name)
     try:
         with open(file_path, "w") as file:
@@ -88,7 +36,6 @@ def create_file(file_name, content=""):
 
 
 def list_contents():
-    """Lists the contents of the current directory."""
     try:
         return os.listdir(current_directory)
     except Exception as e:
@@ -96,7 +43,6 @@ def list_contents():
 
 
 def read_file(file_name):
-    """Reads the content of a file."""
     file_path = os.path.join(current_directory, file_name)
     if os.path.exists(file_path):
         try:
@@ -109,7 +55,6 @@ def read_file(file_name):
 
 
 def delete_file(file_name):
-    """Deletes a file from the current directory."""
     file_path = os.path.join(current_directory, file_name)
     if os.path.exists(file_path):
         try:
@@ -122,7 +67,6 @@ def delete_file(file_name):
 
 
 def delete_folder(folder_name):
-    """Deletes a folder from the current directory."""
     folder_path = os.path.join(current_directory, folder_name)
     if os.path.exists(folder_path):
         try:
@@ -135,7 +79,6 @@ def delete_folder(folder_name):
 
 
 def rename_item(old_name, new_name):
-    """Renames a file or folder in the current directory."""
     old_path = os.path.join(current_directory, old_name)
     new_path = os.path.join(current_directory, new_name)
     if os.path.exists(old_path):
@@ -149,7 +92,6 @@ def rename_item(old_name, new_name):
 
 
 def change_directory(new_directory):
-    """Changes the current directory."""
     global current_directory
     target_directory = os.path.join(current_directory, new_directory)
     if os.path.exists(target_directory) and os.path.isdir(target_directory):
@@ -160,7 +102,6 @@ def change_directory(new_directory):
 
 
 def go_back():
-    """Navigates to the parent directory."""
     global current_directory
     if current_directory != BASE_DIRECTORY:
         current_directory = os.path.dirname(current_directory)
@@ -170,23 +111,39 @@ def go_back():
 
 
 def print_working_directory():
-    """Returns the current working directory, relative to BASE_DIRECTORY."""
     return "/" + os.path.relpath(current_directory, BASE_DIRECTORY).replace("\\", "/")
 
-def alias(alias, command):
-    aliases[alias] = command
-    print(f"Alias added: {alias} -> {command}")
 
-def search_alias(alias, arg1, arg2):
+# Alias management
+def load_aliases():
+    global aliases
+    try:
+        with open(ALIAS_FILE, "r") as file:
+            for line in file:
+                line = line.strip()
+                if "=" in line:
+                    alias, command = line.split("=", 1)
+                    aliases[alias] = command
+    except FileNotFoundError:
+        pass
+
+
+def save_aliases():
+    with open(ALIAS_FILE, "w") as file:
+        for alias, command in aliases.items():
+            file.write(f"{alias}={command}\n")
+
+
+def add_alias(alias, command):
+    aliases[alias] = command
+    save_aliases()
+    return f"Alias added: {alias} -> {command}"
+
+
+def remove_alias(alias):
     if alias in aliases:
-        if arg1 and arg2:
-            find_alias(alias, arg1, arg2)
-        elif arg1:
-            arg2 = ""
-            find_alias(alias, arg1, arg2)
-        else:
-            arg1 = ""
-            arg2 = ""
-            find_alias(alias, arg1, arg2)
+        del aliases[alias]
+        save_aliases()
+        return f"Alias '{alias}' removed."
     else:
-        print(f"zsh: command not found: {alias}")
+        return f"Alias '{alias}' does not exist."
