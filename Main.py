@@ -1,4 +1,7 @@
-from file_system import create_folder, create_file, list_contents, read_file, delete_file, delete_folder
+from file_system import (
+    create_folder, create_file, list_contents, read_file, delete_file, 
+    delete_folder, change_directory, go_back, print_working_directory
+)
 
 def display_help():
     """Displays available commands."""
@@ -6,10 +9,13 @@ def display_help():
 Available commands:
 - mkdir <folder_name>       : Create a folder
 - touch <file_name>         : Create a file
-- ls                        : List contents of the virtual directory
+- ls                        : List contents of the current directory
 - read <file_name>          : Read a file
 - rm <file_name>            : Delete a file
 - rmdir <folder_name>       : Delete a folder
+- cd <folder_name>          : Change directory
+- back                      : Move to the parent directory
+- pwd                       : Print the current working directory
 - help                      : Show this help menu
 - exit                      : Exit the program
 """
@@ -46,6 +52,12 @@ def main():
             print(delete_file(arg))
         elif cmd == "rmdir" and arg:
             print(delete_folder(arg))
+        elif cmd == "cd" and arg:
+            print(change_directory(arg))
+        elif cmd == "back":
+            print(go_back())
+        elif cmd == "pwd":
+            print(print_working_directory())
         elif cmd == "help":
             display_help()
         elif cmd == "exit":
