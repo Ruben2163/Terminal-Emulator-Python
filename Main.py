@@ -1,9 +1,5 @@
-from file_system import (
-    create_folder, create_file, list_contents, read_file, delete_file, 
-    delete_folder, rename_item, change_directory, go_back, print_working_directory, 
-    load_aliases, save_aliases, add_alias, remove_alias, aliases
-)
-
+import readline
+from file_system import *
 
 def display_help():
     commands = """
@@ -11,7 +7,7 @@ Available commands:
 - mkdir <folder_name>       : Create a folder
 - touch <file_name>         : Create a file
 - ls                        : List contents of the current directory
-- read <file_name>          : Read a file
+- cat <file_name>          : Read a file
 - rm <file_name>            : Delete a file
 - rmdir <folder_name>       : Delete a folder
 - mv <old_name> <new_name>  : Rename a file or folder
@@ -20,10 +16,12 @@ Available commands:
 - pwd                       : Print the current working directory
 - alias <name> <command>    : Create an alias
 - unalias <name>            : Remove an alias
+- edit <file_name>          : Edit a file (opens in a basic text editor)
 - help                      : Show this help menu
 - exit                      : Exit the program
 """
     print(commands)
+
 
 
 def execute_command(command):
@@ -46,7 +44,7 @@ def execute_command(command):
     elif cmd == "ls":
         contents = list_contents()
         print("\n".join(contents) if contents else "Directory is empty.")
-    elif cmd == "read" and arg1:
+    elif cmd == "cat" and arg1:
         print(read_file(arg1))
     elif cmd == "rm" and arg1:
         print(delete_file(arg1))
@@ -64,21 +62,47 @@ def execute_command(command):
         print(add_alias(arg1, arg2))
     elif cmd == "unalias" and arg1:
         print(remove_alias(arg1))
+    elif cmd == "sysmonitor":
+        sys_monitor()
+    elif cmd == "sysinfo":
+        sys_info()
     elif cmd == "help":
         display_help()
     elif cmd == "exit":
         print("[process Completed]")
         save_aliases()
         exit(0)
+    elif cmd == "edit" and arg1:
+        print(edit_file(arg1))  # Call the edit_file function
     else:
         print(f"zsh: command not found: {cmd}")
 
 
 def main():
     load_aliases()
+
+    # Set up history using the readline module
+    # You can set a limit to how many commands are saved in history
+    readline.set_history_length(100)
+    
+    # Load previous history if available
+    try:
+        with open('history.txt', 'r') as history_file:
+            for line in history_file:
+                readline.add_history(line.strip())
+    except FileNotFoundError:
+        pass
+
     while True:
         command = input("Admin@Python-Terminal ~ % ").strip()
+
         if command:
+            # Add the command to the history after execution
+            readline.add_history(command)
+            # Save the history to a file
+            with open('history.txt', 'a') as history_file:
+                history_file.write(command + "\n")
+            
             execute_command(command)
 
 
