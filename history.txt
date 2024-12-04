@@ -1,9 +1,0 @@
-hello
-sysmonitor
-sysmonitor
-sysinfo
-exit
-sysmonitor
-sysinfo
-exity
-exit
