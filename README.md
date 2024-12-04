@@ -3,7 +3,7 @@
 A Python-based Linux terminal simulation that allows users to execute basic file system commands within a virtual environment. Includes support for file management, directory navigation, and command aliases.
 
 ---
-
+![Demo](READMEIMGS/demo.png)
 ## **Features**
 - **File System Management**:
   - Create folders and files (`mkdir`, `touch`).
