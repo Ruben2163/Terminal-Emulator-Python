@@ -1,13 +1,14 @@
 import readline
 from file_system import *
 
+
 def display_help():
     commands = """
 Available commands:
 - mkdir <folder_name>       : Create a folder
 - touch <file_name>         : Create a file
 - ls                        : List contents of the current directory
-- cat <file_name>          : Read a file
+- cat <file_name>           : Read a file
 - rm <file_name>            : Delete a file
 - rmdir <folder_name>       : Delete a folder
 - mv <old_name> <new_name>  : Rename a file or folder
@@ -21,7 +22,6 @@ Available commands:
 - exit                      : Exit the program
 """
     print(commands)
-
 
 
 def execute_command(command):
@@ -82,12 +82,11 @@ def main():
     load_aliases()
 
     # Set up history using the readline module
-    # You can set a limit to how many commands are saved in history
     readline.set_history_length(100)
-    
+
     # Load previous history if available
     try:
-        with open('history.txt', 'r') as history_file:
+        with open("history.txt", "r") as history_file:
             for line in history_file:
                 readline.add_history(line.strip())
     except FileNotFoundError:
@@ -100,9 +99,9 @@ def main():
             # Add the command to the history after execution
             readline.add_history(command)
             # Save the history to a file
-            with open('history.txt', 'a') as history_file:
+            with open("history.txt", "a") as history_file:
                 history_file.write(command + "\n")
-            
+
             execute_command(command)
 
 
