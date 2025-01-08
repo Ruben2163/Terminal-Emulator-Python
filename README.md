@@ -1,8 +1,9 @@
 # **Python Terminal**
+---
 ## End of support
 A Python-based Linux terminal simulation that allows users to execute basic file system commands within a virtual environment. Includes support for file management, directory navigation, and command aliases.
 
----
+
 ![Demo](READMEIMGS/demo.jpg)
 ## **Features**
 - **File System Management**:
