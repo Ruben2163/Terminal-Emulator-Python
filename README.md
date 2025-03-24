@@ -1,6 +1,5 @@
 # **Python Terminal**
 
-![Demo](READMEIMGS/demo.jpg)
 ## **Features**
 - **File System Management**:
   - Create folders and files (`mkdir`, `touch`).
