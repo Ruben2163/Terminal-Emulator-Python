@@ -25,7 +25,7 @@
 - Python 3.6 or higher.
 
 ### **Steps**
-1. Clone the repository:
+1. Clone this repository:
    ```bash
    git clone https://github.com/Ruben2163/Python-Terminal.git
 1. Run Main.py:
