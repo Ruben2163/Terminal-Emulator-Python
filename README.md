@@ -18,7 +18,6 @@
   - Virtual file system and aliases persist across sessions.
 
 ---
-
 ## **Installation**
 
 ### **Prerequisites**
