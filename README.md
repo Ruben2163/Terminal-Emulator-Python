@@ -1,6 +1,6 @@
 # **Python Terminal**
 
-## **Features**
+## **Features** 
 - **File System Management**:
   - Create folders and files (`mkdir`, `touch`).
   - List directory contents (`ls`).
